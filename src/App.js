@@ -2,22 +2,21 @@ import React, { useState } from "react";
 
 function App() {
   const [value, setValue] = useState('')
-  const [tasks, setTasks] = useState([
+  const [tasks, setTasks] = useState([])
+  const [tags, setTags] = useState([
     {
-      name: 'buy',
-      isComplited: false,
-      tags: ['#shopping']
+      name: 'shopping', 
+      isAdded: false
     },
     {
-      name: 'bread',
-      isComplited: true,
-      tags: ['#hobby']
+      name: 'hobby', 
+      isAdded: false
+    },
+    {
+      name: 'work', 
+      isAdded: false
     }
-  ])
-  // const [tags, setTags] = useState(['#shopping', '#hobby', '#work'])
-  const [checkedOne, setCheckedOne] = useState(false);
-  const [checkedTwo, setCheckedTwo] = useState(false);
-  const [checkedThree, setCheckedThree] = useState(false);
+  ]) 
 
   const eventEnterHandler = (event) => {
     setValue(event.target.value)
@@ -25,25 +24,14 @@ function App() {
 
   const eventHadler = () => { 
     if (value.length !== 0) {
-      const tags = []
-      if (checkedOne) {
-        tags.push('#shopping')
-      }
-
-      if (checkedTwo) {
-        tags.push('#work')
-      }
-
-      if (checkedThree) {
-        tags.push('#hobby')
-      }
-
-      setTasks([...tasks, { name: value, isComplited: false, tags }])
+      const tagsChecked = tags.filter(tag => tag.isAdded)
+      setTasks([...tasks, { name: value, isComplited: false, tags: tagsChecked.map(tag => tag.name) }])
       setValue('')
-      setCheckedOne(false)
-      setCheckedTwo(false)
-      setCheckedThree(false)
-      
+      const res = tags.map(tag => {
+        tag.isAdded = false
+        return tag
+      })
+      setTags(res)
     }
   }
 
@@ -52,38 +40,38 @@ function App() {
     setTasks([...tasks])
   }
 
+  const handleCheckbox = (e, tag, index) => {
+    tags[index].isAdded = e.target.checked;
+    setTags([...tags])
+  }
+
   return (
       <div>
         <h1>ToDoList</h1>
-        <input 
+        <input
           type="text" 
           value={value}
           placeholder="Enter your task"
           onChange={eventEnterHandler}
-          /><br/>
-          <label>
-            <input type="checkbox" 
-            checked={checkedOne}
-            onChange={() => setCheckedOne(!checkedOne)}
-            />
-            #shopping
-          </label>
-          <label>
-            <input type="checkbox" 
-            checked={checkedTwo}
-            onChange={() => setCheckedTwo(!checkedTwo)}
-            />
-            #work
-          </label>
-          <label>
-            <input type="checkbox" 
-            checked={checkedThree}
-            onChange={() => setCheckedThree(!checkedThree)}
-            />
-            #hobby
-          </label><br/>
+          />
+          <br/>
+          {tags.map((tag, index) => {
+            return (
+              <label key={index}>
+                <input
+                  type="checkbox"
+                  value={tag.name}
+                  checked={tag.isAdded}
+                  onChange={(e) => handleCheckbox(e, tag, index)}
+                />
+                #{tag.name}
+              </label>
+            )
+          })}
+          <br/>
           <button onClick={eventHadler}>Submit</button>
-        <h3>Task list</h3> 
+        <h3>Task list</h3>
+        {tasks.length === 0 && <p><b>No task added</b></p>}
           <ol>
             {tasks.map((task, index) => {
               const { name, isComplited, tags } = task
