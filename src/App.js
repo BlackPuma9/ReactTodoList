@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 function App() {
   const [value, setValue] = useState('')
+  const [isValidInput, setIsValidInput] = useState(true)
   const [tasks, setTasks] = useState([])
   const [tags, setTags] = useState([
     {
@@ -16,10 +17,11 @@ function App() {
       name: 'work', 
       isAdded: false
     }
-  ]) 
+  ])
 
   const eventEnterHandler = (event) => {
     setValue(event.target.value)
+    setIsValidInput(value.length !== 0)
   }
 
   const eventHadler = () => { 
@@ -32,6 +34,9 @@ function App() {
         return tag
       })
       setTags(res)
+      setIsValidInput(true)
+    } else {
+      setIsValidInput(false)
     }
   }
 
@@ -40,7 +45,7 @@ function App() {
     setTasks([...tasks])
   }
 
-  const handleCheckbox = (e, tag, index) => {
+  const handleCheckbox = (e, index) => {
     tags[index].isAdded = e.target.checked;
     setTags([...tags])
   }
@@ -55,6 +60,10 @@ function App() {
           onChange={eventEnterHandler}
           />
           <br/>
+          {!isValidInput && <span style={{color: "red", border: '1px solid red'}}>
+            Input cannot be empty
+            </span>}
+          <br/>
           {tags.map((tag, index) => {
             return (
               <label key={index}>
@@ -62,7 +71,7 @@ function App() {
                   type="checkbox"
                   value={tag.name}
                   checked={tag.isAdded}
-                  onChange={(e) => handleCheckbox(e, tag, index)}
+                  onChange={(e) => handleCheckbox(e, index)}
                 />
                 #{tag.name}
               </label>
