@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Form from "./pages/ToDoList/Form";
 
 function App() {
   const [value, setValue] = useState('')
@@ -53,32 +54,18 @@ function App() {
   return (
       <div>
         <h1>ToDoList</h1>
-        <input
-          type="text" 
-          value={value}
-          placeholder="Enter your task"
-          onChange={eventEnterHandler}
-          />
-          <br/>
-          {!isValidInput && <span style={{color: "red", border: '1px solid red'}}>
-            Input cannot be empty
-            </span>}
-          <br/>
-          {tags.map((tag, index) => {
-            return (
-              <label key={index}>
-                <input
-                  type="checkbox"
-                  value={tag.name}
-                  checked={tag.isAdded}
-                  onChange={(e) => handleCheckbox(e, index)}
-                />
-                #{tag.name}
-              </label>
-            )
-          })}
-          <br/>
-          <button onClick={eventHadler}>Submit</button>
+
+
+       <Form
+        value={value}
+        eventEnterHandler={eventEnterHandler}
+        isValidInput={isValidInput}
+        tags={tags}
+        handleCheckbox={handleCheckbox} 
+        eventHadler={eventHadler}
+       />
+
+
         <h3>Task list</h3>
         {tasks.length === 0 && <p><b>No task added</b></p>}
           <ol>
